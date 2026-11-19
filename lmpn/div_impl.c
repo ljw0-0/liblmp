@@ -1,5 +1,4 @@
 #include "lmp.h"
-#include "impl.h"
 #include <string.h>
 
 #define DIV_DC_THRESHOLD 200
@@ -31,7 +30,7 @@ static int lmpn_divmod_2n_n(limb_t *q, limb_t *a, size_t n, const limb_t *b, siz
     assert(hi >= lo);
     assert(b[m-1] >> (LIMB_WIDTH-1));
     assert(b[m-1] >= a[n-1]);
-    unlikely(lmpn_divmod_3n_2n(q+hi, a+hi, n-hi, b, m)) return 1;
+    if (LMP_UNLIKELY(lmpn_divmod_3n_2n(q+hi, a+hi, n-hi, b, m))) return 1;
     if (m & 1) {
         // i-m = hi-1, i=m+hi-1
         q[hi-1] = limb_div(a[m+hi-1], a[m+hi-2], b[m-1]);
@@ -60,10 +59,10 @@ static int lmpn_divmod_3n_2n(limb_t *q, limb_t *a, size_t n, const limb_t *b, si
     assert(lmpn_cmp(a+hi+lo, b+lo, hi) == -1);
     limb_t k = n-m; // n>=2*k = 2n-2m -> n - 2m <= 0, m >= k -> m>=n-m -> 2m>=n
     // n-m >= 2m-n -> 2n >= 3m -> n >= 1.5m
-    unlikely(lmpn_divmod_2n_n(q, a+n-2*k, 2*k, b+m-k, k)) return 1;
+    if (LMP_UNLIKELY(lmpn_divmod_2n_n(q, a+n-2*k, 2*k, b+m-k, k))) return 1;
     limb_t *d = lmpn_alloc(m);
-    unlikely(!d) return 1;
-    unlikely(lmpn_mul(d, b, m-k, q, n-m)) {free(d); return 1;}
+    if (LMP_UNLIKELY(!d)) return 1;
+    if (LMP_UNLIKELY(lmpn_mul(d, b, m-k, q, n-m))) {free(d); return 1;}
     int borrow = lmpn_sub(a, a, n, d, m);
     free(d);
 
@@ -79,7 +78,7 @@ static int lmpn_divmod_3n_2n(limb_t *q, limb_t *a, size_t n, const limb_t *b, si
 static int lmpn_divmod_dc(limb_t *q, limb_t *a, size_t n, const limb_t *b, size_t m) {
     while (n > 2*m) {
         n -= m;
-        unlikely(lmpn_divmod_2n_n(q+n-m, a+n-m, 2*m, b, m)) return 1;
+        if (LMP_UNLIKELY(lmpn_divmod_2n_n(q+n-m, a+n-m, 2*m, b, m))) return 1;
     }
     if (n > 3*m/2) return lmpn_divmod_2n_n(q, a, n, b, m);
     else if (n - m >= DIV_DC_THRESHOLD) return lmpn_divmod_3n_2n(q, a, n, b, m);
@@ -104,7 +103,7 @@ int _lmpn_div_r(limb_t *a, size_t n, const limb_t *b, size_t m) {
         return 0;
     } else {
         limb_t *q = lmpn_alloc(n-m);
-        unlikely(!q) return 1;
+        if (LMP_UNLIKELY(!q)) return 1;
         int r = lmpn_divmod_dc(q, a, n, b, m);
         free(q);
         return r;

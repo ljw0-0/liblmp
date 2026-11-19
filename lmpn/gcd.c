@@ -80,7 +80,7 @@ static size_t lehmer(limb_t *g, limb_t *a, size_t n, limb_t *b, size_t m) {
         int sgn = 8;
         while (n > m) {
             amodb:
-            unlikely(lmpn_div_r(a, a, n, b, m)) return 0;
+            if (LMP_UNLIKELY(lmpn_div_r(a, a, n, b, m))) return 0;
             n = lmpn_norm(a, m);
             if (n == 0) {
                 memcpy(g, a, n*sizeof(limb_t));
@@ -126,7 +126,7 @@ static size_t lehmer(limb_t *g, limb_t *a, size_t n, limb_t *b, size_t m) {
         assert(sgn == 8 || sgn == 6 || sgn == 9);
 
         tmp = lmpn_alloc(n);
-        unlikely(!tmp) return 0;
+        if (LMP_UNLIKELY(!tmp)) return 0;
         
         if (sgn == 6) {
             // B, C < 0

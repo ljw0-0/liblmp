@@ -30,12 +30,6 @@
 #define cltag(x)  clean_##x             // clean tag
 #define tfree(x)  cltag(x): free(x)     // tags and free
 
-#if defined(__GNUC__) || defined(__clang__)
-# define unlikely(x) if (__builtin_expect(!!(x), 0))
-#else
-# define unlikely(x) if (x)
-#endif
-
 #define swap(x, y, type) {type tmp##x##y = x; x = y; y = tmp##x##y;}
 
 #endif

@@ -45,28 +45,28 @@ static int toom22(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t 
     const limb_t *a1 = a + l, *b1 = b + l;
 
     limb_t *a0pa1 = lmpn_alloc(l+1);
-    unlikely(!a0pa1) {return 1;}
+    if (LMP_UNLIKELY(!a0pa1)) {return 1;}
     limb_t *b0pb1 = lmpn_alloc(l+1);
-    unlikely(!b0pb1) {clean1: free(a0pa1); return 1;}
+    if (LMP_UNLIKELY(!b0pb1)) {clean1: free(a0pa1); return 1;}
 
     a0pa1[l] = lmpn_add(a0pa1, a, l, a1, ha);
     b0pb1[l] = lmpn_add(b0pb1, b, l, b1, hb);
 
     limb_t *pmul = lmpn_alloc((l+1)<<1);
-    unlikely(!pmul) {free(b0pb1); goto clean1;}
+    if (LMP_UNLIKELY(!pmul)) {free(b0pb1); goto clean1;}
 
     int r = lmpn_mul_n(pmul, a0pa1, b0pb1, l+1);
 
     free(a0pa1);
     free(b0pb1);
 
-    unlikely(r) goto clean;
+    if (LMP_UNLIKELY(r)) goto clean;
 
     r = lmpn_mul_n(c, a, b, l);
-    unlikely(r) goto clean;
+    if (LMP_UNLIKELY(r)) goto clean;
 
     r = lmpn_mul(c+(l<<1), a1, ha, b1, hb);
-    unlikely(r) goto clean;
+    if (LMP_UNLIKELY(r)) goto clean;
 
     lmpn_sub(pmul, pmul, (l<<1)+2, c,       (l<<1));
     lmpn_sub(pmul, pmul, (l<<1)+2, c+(l<<1), ha+hb);
@@ -121,29 +121,29 @@ static int toom33(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t 
     const limb_t *b1 = b + l, *b2 = b + (l<<1);
 
     limb_t *v0 = lmpn_alloc(l<<1);
-    unlikely(!v0)  return 1;
+    if (LMP_UNLIKELY(!v0))  return 1;
     limb_t *v1 = lmpn_alloc((l<<1)+2);
-    unlikely(!v1)  goto cltag(v0);
+    if (LMP_UNLIKELY(!v1))  goto cltag(v0);
     limb_t *vm1 = lmpn_alloc((l<<1)+2);
-    unlikely(!vm1) goto cltag(v1);
+    if (LMP_UNLIKELY(!vm1)) goto cltag(v1);
     limb_t *v2 = lmpn_alloc((l<<1)+2);
-    unlikely(!v2)  goto cltag(vm1);
+    if (LMP_UNLIKELY(!v2))  goto cltag(vm1);
     limb_t *vinf = lmpn_alloc(ha+hb);
-    unlikely(!vinf) goto cltag(v2);
+    if (LMP_UNLIKELY(!vinf)) goto cltag(v2);
 
     limb_t *p1 = lmpn_alloc(l+1);
-    unlikely(!p1)  goto cltag(vinf);
+    if (LMP_UNLIKELY(!p1))  goto cltag(vinf);
     limb_t *pm1 = lmpn_alloc(l+1);
-    unlikely(!pm1) goto cltag(p1);
+    if (LMP_UNLIKELY(!pm1)) goto cltag(p1);
     limb_t *p2 = lmpn_alloc(l+1);
-    unlikely(!p2)  goto cltag(pm1);
+    if (LMP_UNLIKELY(!p2))  goto cltag(pm1);
     limb_t *q1 = lmpn_alloc(l+1);
-    unlikely(!q1)  goto cltag(p2);
+    if (LMP_UNLIKELY(!q1))  goto cltag(p2);
     limb_t *qm1 = lmpn_alloc(l+1);
-    unlikely(!qm1) goto cltag(q1);
+    if (LMP_UNLIKELY(!qm1)) goto cltag(q1);
     limb_t *q2 = lmpn_alloc(l+1);
 
-    unlikely(!q2) {
+    if (LMP_UNLIKELY(!q2)) {
         tfree(q2);
         tfree(qm1);
         tfree(q1);
@@ -179,7 +179,7 @@ static int toom33(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t 
 
     // mul
 
-    unlikely(lmpn_mul_n(v0, a, b, l) || lmpn_mul_n(v1, p1, q1, l+1) || lmpn_mul_n(vm1, pm1, qm1, l+1) || lmpn_mul_n(v2, p2, q2, l+1) || lmpn_mul(vinf, a2, ha, b2, hb)) goto cltag(q2);
+    if (LMP_UNLIKELY(lmpn_mul_n(v0, a, b, l)) || lmpn_mul_n(v1, p1, q1, l+1) || lmpn_mul_n(vm1, pm1, qm1, l+1) || lmpn_mul_n(v2, p2, q2, l+1) || lmpn_mul(vinf, a2, ha, b2, hb)) goto cltag(q2);
 
     free(p1);
     free(pm1);
@@ -195,7 +195,7 @@ static int toom33(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t 
     size_t t = (l<<1)+1;
 
     limb_t *c2 = lmpn_alloc(t);
-    unlikely(!c2) goto cltag(vinf);
+    if (LMP_UNLIKELY(!c2)) goto cltag(vinf);
     // c0 will be stored in v0, c1 will be stored in v1, c3 will be stored in v2, c4 will be stored in vinf
 
     if (sgn) {
@@ -252,28 +252,28 @@ static int toom44(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t 
     const limb_t *b1 = b + l, *b2 = b + 2*l, *b3 = b + 3*l;
 
     limb_t *p1 = lmpn_alloc(l+1);
-    unlikely(!p1) return 1;
+    if (LMP_UNLIKELY(!p1)) return 1;
     limb_t *pm1 = lmpn_alloc(l+1);
-    unlikely(!pm1) goto cltag(p1);
+    if (LMP_UNLIKELY(!pm1)) goto cltag(p1);
     limb_t *p2 = lmpn_alloc(l+1);
-    unlikely(!p2) goto cltag(pm1);
+    if (LMP_UNLIKELY(!p2)) goto cltag(pm1);
     limb_t *pm2 = lmpn_alloc(l+1);
-    unlikely(!pm2) goto cltag(p2);
+    if (LMP_UNLIKELY(!pm2)) goto cltag(p2);
     limb_t *p12 = lmpn_alloc(l+1);
-    unlikely(!p12) goto cltag(pm2);
+    if (LMP_UNLIKELY(!p12)) goto cltag(pm2);
     limb_t *q1 = lmpn_alloc(l+1);
-    unlikely(!q1) goto cltag(p12);
+    if (LMP_UNLIKELY(!q1)) goto cltag(p12);
     limb_t *qm1 = lmpn_alloc(l+1);
-    unlikely(!qm1) goto cltag(q1);
+    if (LMP_UNLIKELY(!qm1)) goto cltag(q1);
     limb_t *q2 = lmpn_alloc(l+1);
-    unlikely(!q2) goto cltag(qm1);
+    if (LMP_UNLIKELY(!q2)) goto cltag(qm1);
     limb_t *qm2 = lmpn_alloc(l+1);
-    unlikely(!qm2) goto cltag(q2);
+    if (LMP_UNLIKELY(!qm2)) goto cltag(q2);
     limb_t *q12 = lmpn_alloc(l+1);
-    unlikely(!q12) goto cltag(qm2);
+    if (LMP_UNLIKELY(!q12)) goto cltag(qm2);
     limb_t *tmp = lmpn_alloc(l+1);
 
-    unlikely(!tmp) {
+    if (LMP_UNLIKELY(!tmp)) {
         tfree(tmp);
         tfree(q12); tfree(qm2); tfree(q2); tfree(qm1); tfree(q1);
         tfree(p12); tfree(pm2); tfree(p2); tfree(pm1); tfree(p1);
@@ -321,25 +321,25 @@ static int toom44(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t 
     lmpn_add(q12, q12, l+1, b3, hb);
 
     limb_t *v0 = lmpn_alloc(l<<2);
-    unlikely(!v0) goto cltag(q12);
+    if (LMP_UNLIKELY(!v0)) goto cltag(q12);
     limb_t *v1 = lmpn_alloc((l+1)<<1);
-    unlikely(!v1) goto cltag(v0);
+    if (LMP_UNLIKELY(!v1)) goto cltag(v0);
     limb_t *vm1 = lmpn_alloc((l+1)<<1);
-    unlikely(!vm1) goto cltag(v1);
+    if (LMP_UNLIKELY(!vm1)) goto cltag(v1);
     limb_t *v2 = lmpn_alloc((l+1)<<1);
-    unlikely(!v2) goto cltag(vm1);
+    if (LMP_UNLIKELY(!v2)) goto cltag(vm1);
     limb_t *vm2 = lmpn_alloc((l+1)<<1);
-    unlikely(!vm2) goto cltag(v2);
+    if (LMP_UNLIKELY(!vm2)) goto cltag(v2);
     limb_t *v12 = lmpn_alloc((l+1)<<1);
-    unlikely(!v12) goto cltag(vm2);
+    if (LMP_UNLIKELY(!v12)) goto cltag(vm2);
     limb_t *vinf = lmpn_alloc(ha+hb);
 
-    unlikely(!vinf) {
+    if (LMP_UNLIKELY(!vinf)) {
         tfree(vinf); tfree(v12); tfree(vm2); tfree(v2); tfree(vm1); tfree(v1); tfree(v0);
         goto cltag(q12);
     }
 
-    unlikely(lmpn_mul_n(v0, a, b, l)   ||
+    if (LMP_UNLIKELY(lmpn_mul_n(v0, a, b, l))   ||
         lmpn_mul_n(v1, p1, q1, l+1)    ||
         lmpn_mul_n(vm1, pm1, qm1, l+1) ||
         lmpn_mul_n(v2, p2, q2, l+1)    ||
@@ -358,16 +358,16 @@ static int toom44(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t 
 
     size_t t = (l+1)<<1;
     limb_t *c1 = lmpn_alloc(t);
-    unlikely(!c1) goto clt;
+    if (LMP_UNLIKELY(!c1)) goto clt;
     limb_t *c2 = lmpn_alloc(t);
-    unlikely(!c2) goto cltag(c1);
+    if (LMP_UNLIKELY(!c2)) goto cltag(c1);
     limb_t *c3 = lmpn_alloc(t);
-    unlikely(!c3) goto cltag(c2);
+    if (LMP_UNLIKELY(!c3)) goto cltag(c2);
     limb_t *c4 = lmpn_alloc(t);
-    unlikely(!c4) goto cltag(c3);
+    if (LMP_UNLIKELY(!c4)) goto cltag(c3);
     limb_t *c5 = lmpn_alloc(t);
 
-    unlikely(!c5) {
+    if (LMP_UNLIKELY(!c5)) {
         tfree(c5); tfree(c4); tfree(c3); tfree(c2); tfree(c1);
         clt: free(vinf); free(v12); free(vm2); free(v2); free(vm1); free(v1); free(v0);
         return 1;
@@ -469,23 +469,23 @@ static int toom32(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t 
     assert(ha <= l && hb <= l && ha + hb > l);
 
     limb_t *v0 = lmpn_alloc(l<<1);
-    unlikely(!v0) return 1;
+    if (LMP_UNLIKELY(!v0)) return 1;
     limb_t *v1 = lmpn_alloc((l+1)<<1);
-    unlikely(!v1) goto cltag(v0);
+    if (LMP_UNLIKELY(!v1)) goto cltag(v0);
     limb_t *vm1 = lmpn_alloc((l<<1)+1);
-    unlikely(!vm1) goto cltag(v1);
+    if (LMP_UNLIKELY(!vm1)) goto cltag(v1);
     limb_t *vinf = lmpn_alloc(ha+hb);
-    unlikely(!vinf) goto cltag(vm1);
+    if (LMP_UNLIKELY(!vinf)) goto cltag(vm1);
 
     limb_t *p1 = lmpn_alloc(l+1);
-    unlikely(!p1) goto cltag(vinf);
+    if (LMP_UNLIKELY(!p1)) goto cltag(vinf);
     limb_t *pm1 = lmpn_alloc(l+1);
-    unlikely(!pm1) goto cltag(p1);
+    if (LMP_UNLIKELY(!pm1)) goto cltag(p1);
     limb_t *q1 = lmpn_alloc(l+1);
-    unlikely(!q1) goto cltag(pm1);
+    if (LMP_UNLIKELY(!q1)) goto cltag(pm1);
     limb_t *qm1 = lmpn_alloc(l);
 
-    unlikely(!qm1) {
+    if (LMP_UNLIKELY(!qm1)) {
         tfree(qm1); tfree(q1); tfree(pm1); tfree(p1);
         tfree(vinf); tfree(vm1); tfree(v1); tfree(v0);
         return 1;
@@ -502,7 +502,7 @@ static int toom32(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t 
         sgn ^= 1;
     }
 
-    unlikely(lmpn_mul_n(v0, a, b, l) ||
+    if (LMP_UNLIKELY(lmpn_mul_n(v0, a, b, l)) ||
              lmpn_mul_n(v1, p1, q1, l+1) ||
              lmpn_mul(vm1, pm1, l+1, qm1, l) ||
              (ha >= hb ? lmpn_mul(vinf, a2, ha, b1, hb)
@@ -514,7 +514,7 @@ static int toom32(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t 
 
     size_t t = (l<<1)+1;
     limb_t *c2 = lmpn_alloc(t);
-    unlikely(!c2) goto cltag(vinf);
+    if (LMP_UNLIKELY(!c2)) goto cltag(vinf);
 
     if (sgn) {
         lmpn_sub_n(c2, v1, vm1, t);
@@ -551,19 +551,19 @@ static int toom42(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t 
     const limb_t *b1 = b + l;
 
     limb_t *tmp = lmpn_alloc(l + 1);
-    unlikely(!tmp) return 1;
+    if (LMP_UNLIKELY(!tmp)) return 1;
     limb_t *p1 = lmpn_alloc(l + 1);
-    unlikely(!p1) goto cltag(tmp);
+    if (LMP_UNLIKELY(!p1)) goto cltag(tmp);
     limb_t *pm1 = lmpn_alloc(l + 1);
-    unlikely(!pm1) goto cltag(p1);
+    if (LMP_UNLIKELY(!pm1)) goto cltag(p1);
     limb_t *p2 = lmpn_alloc(l + 1);
-    unlikely(!p2) goto cltag(pm1);
+    if (LMP_UNLIKELY(!p2)) goto cltag(pm1);
     limb_t *q1 = lmpn_alloc(l + 1);
-    unlikely(!q1) goto cltag(p2);
+    if (LMP_UNLIKELY(!q1)) goto cltag(p2);
     limb_t *qm1 = lmpn_alloc(l);
-    unlikely(!qm1) goto cltag(q1);
+    if (LMP_UNLIKELY(!qm1)) goto cltag(q1);
     limb_t *q2 = lmpn_alloc(l + 1);
-    unlikely(!q2) goto cltag(qm1);
+    if (LMP_UNLIKELY(!q2)) goto cltag(qm1);
 
     tmp[l] = lmpn_add(tmp, a1, l, a3, ha);
     pm1[l] = lmpn_add_n(pm1, a, a2, l);
@@ -586,17 +586,17 @@ static int toom42(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t 
     free(tmp); tmp = NULL;
 
     limb_t *v0 = lmpn_alloc(l << 1);
-    unlikely(!v0) goto cltag(q2);
+    if (LMP_UNLIKELY(!v0)) goto cltag(q2);
     limb_t *v1 = lmpn_alloc((l << 1) + 2);
-    unlikely(!v1) goto cltag(v0);
+    if (LMP_UNLIKELY(!v1)) goto cltag(v0);
     limb_t *vm1 = lmpn_alloc((l << 1) + 1);
-    unlikely(!vm1) goto cltag(v1);
+    if (LMP_UNLIKELY(!vm1)) goto cltag(v1);
     limb_t *v2 = lmpn_alloc((l << 1) + 2);
-    unlikely(!v2) goto cltag(vm1);
+    if (LMP_UNLIKELY(!v2)) goto cltag(vm1);
     limb_t *vinf = lmpn_alloc(ha + hb);
-    unlikely(!vinf) goto cltag(v2);
+    if (LMP_UNLIKELY(!vinf)) goto cltag(v2);
 
-    unlikely(lmpn_mul_n(v0, a, b, l) ||
+    if (LMP_UNLIKELY(lmpn_mul_n(v0, a, b, l)) ||
              lmpn_mul_n(v1, p1, q1, l + 1) ||
              lmpn_mul(vm1, pm1, l + 1, qm1, l) ||
              lmpn_mul_n(v2, p2, q2, l + 1) ||
@@ -617,9 +617,9 @@ static int toom42(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t 
     size_t t = (l << 1) + 1;
 
     limb_t *c2 = lmpn_alloc(t);
-    unlikely(!c2) goto cltag(vinf);
+    if (LMP_UNLIKELY(!c2)) goto cltag(vinf);
     limb_t *c3 = lmpn_alloc(t);
-    unlikely(!c3) {
+    if (LMP_UNLIKELY(!c3)) {
         tfree(c3);
         tfree(c2);
         tfree(vinf);
@@ -686,25 +686,25 @@ static int toom43(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t 
     const limb_t *b1 = b + l, *b2 = b + 2*l;
 
     limb_t *tmp1 = lmpn_alloc(l + 2);
-    unlikely(!tmp1) return 1;
+    if (LMP_UNLIKELY(!tmp1)) return 1;
     limb_t *tmp2 = lmpn_alloc(l + 2);
-    unlikely(!tmp2) goto cltag(tmp1);
+    if (LMP_UNLIKELY(!tmp2)) goto cltag(tmp1);
     limb_t *p1 = lmpn_alloc(l+1);
-    unlikely(!p1) goto cltag(tmp2);
+    if (LMP_UNLIKELY(!p1)) goto cltag(tmp2);
     limb_t *pm1 = lmpn_alloc(l+1);
-    unlikely(!pm1) goto cltag(p1);
+    if (LMP_UNLIKELY(!pm1)) goto cltag(p1);
     limb_t *p2 = lmpn_alloc(l+1);
-    unlikely(!p2) goto cltag(pm1);
+    if (LMP_UNLIKELY(!p2)) goto cltag(pm1);
     limb_t *pm2 = lmpn_alloc(l+1);
-    unlikely(!pm2) goto cltag(p2);
+    if (LMP_UNLIKELY(!pm2)) goto cltag(p2);
     limb_t *q1 = lmpn_alloc(l+1);
-    unlikely(!q1) goto cltag(pm2);
+    if (LMP_UNLIKELY(!q1)) goto cltag(pm2);
     limb_t *qm1 = lmpn_alloc(l+1);
-    unlikely(!qm1) goto cltag(q1);
+    if (LMP_UNLIKELY(!qm1)) goto cltag(q1);
     limb_t *q2 = lmpn_alloc(l+1);
-    unlikely(!q2) goto cltag(qm1);
+    if (LMP_UNLIKELY(!q2)) goto cltag(qm1);
     limb_t *qm2 = lmpn_alloc(l+1);
-    unlikely(!qm2) goto cltag(q2);
+    if (LMP_UNLIKELY(!qm2)) goto cltag(q2);
 
     // p1 = a0+a1+a2+a3, pm1 = |a0-a1+a2-a3|
     tmp1[l] = lmpn_add(tmp1, a1, l, a3, ha);
@@ -742,19 +742,19 @@ static int toom43(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t 
     free(tmp2); tmp2 = NULL;
 
     limb_t *v0 = lmpn_alloc(l << 1);
-    unlikely(!v0) goto cltag(qm2);
+    if (LMP_UNLIKELY(!v0)) goto cltag(qm2);
     limb_t *v1 = lmpn_alloc((l+1) << 1);
-    unlikely(!v1) goto cltag(v0);
+    if (LMP_UNLIKELY(!v1)) goto cltag(v0);
     limb_t *vm1 = lmpn_alloc((l+1) << 1);
-    unlikely(!vm1) goto cltag(v1);
+    if (LMP_UNLIKELY(!vm1)) goto cltag(v1);
     limb_t *v2 = lmpn_alloc((l+1) << 1);
-    unlikely(!v2) goto cltag(vm1);
+    if (LMP_UNLIKELY(!v2)) goto cltag(vm1);
     limb_t *vm2 = lmpn_alloc((l+1) << 1);
-    unlikely(!vm2) goto cltag(v2);
+    if (LMP_UNLIKELY(!vm2)) goto cltag(v2);
     limb_t *vinf = lmpn_alloc(ha + hb);
-    unlikely(!vinf) goto cltag(vm2);
+    if (LMP_UNLIKELY(!vinf)) goto cltag(vm2);
 
-    unlikely(lmpn_mul_n(v0, a, b, l) ||
+    if (LMP_UNLIKELY(lmpn_mul_n(v0, a, b, l)) ||
              lmpn_mul_n(v1, p1, q1, l+1) ||
              lmpn_mul_n(vm1, pm1, qm1, l+1) ||
              lmpn_mul_n(v2, p2, q2, l+1) ||
@@ -775,24 +775,24 @@ static int toom43(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t 
     size_t t2 = (l << 1) + 4;
 
     limb_t *A = lmpn_alloc(t2);
-    unlikely(!A) goto cltag(vinf);
+    if (LMP_UNLIKELY(!A)) goto cltag(vinf);
     limb_t *B = lmpn_alloc(t2);
-    unlikely(!B) goto cltag(A);
+    if (LMP_UNLIKELY(!B)) goto cltag(A);
     limb_t *C = lmpn_alloc(t2);
-    unlikely(!C) goto cltag(B);
+    if (LMP_UNLIKELY(!C)) goto cltag(B);
     limb_t *D = lmpn_alloc(t2);
-    unlikely(!D) goto cltag(C);
+    if (LMP_UNLIKELY(!D)) goto cltag(C);
     limb_t *c1 = lmpn_alloc(t2);
-    unlikely(!c1) goto cltag(D);
+    if (LMP_UNLIKELY(!c1)) goto cltag(D);
     limb_t *c2 = lmpn_alloc(t2);
-    unlikely(!c2) goto cltag(c1);
+    if (LMP_UNLIKELY(!c2)) goto cltag(c1);
     limb_t *c3 = lmpn_alloc(t2);
-    unlikely(!c3) goto cltag(c2);
+    if (LMP_UNLIKELY(!c3)) goto cltag(c2);
     limb_t *c4 = lmpn_alloc(t2);
-    unlikely(!c4) goto cltag(c3);
+    if (LMP_UNLIKELY(!c4)) goto cltag(c3);
     limb_t *tmp = lmpn_alloc(t2 + 1);
 
-    unlikely(!tmp) {
+    if (LMP_UNLIKELY(!tmp)) {
         tfree(tmp);
         tfree(c4); tfree(c3); tfree(c2); tfree(c1);
         tfree(D); tfree(C); tfree(B); tfree(A);
@@ -891,12 +891,12 @@ static int ntt(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t m) 
     while (L < l) {L <<= 1; ++k;}
     assert(L <= LIMB_MAX);
     limb_t *A[3], *B[3];
-    unlikely(!(A[0] = lmpn_alloc(L))) return 1;
-    unlikely(!(A[1] = lmpn_alloc(L))) goto clean_A0;
-    unlikely(!(A[2] = lmpn_alloc(L))) goto clean_A1;
-    unlikely(!(B[0] = lmpn_alloc(L))) goto clean_A2;
-    unlikely(!(B[1] = lmpn_alloc(L))) goto clean_B0;
-    unlikely(!(B[2] = lmpn_alloc(L))) {
+    if (LMP_UNLIKELY(!(A[0] = lmpn_alloc(L)))) return 1;
+    if (LMP_UNLIKELY(!(A[1] = lmpn_alloc(L)))) goto clean_A0;
+    if (LMP_UNLIKELY(!(A[2] = lmpn_alloc(L)))) goto clean_A1;
+    if (LMP_UNLIKELY(!(B[0] = lmpn_alloc(L)))) goto clean_A2;
+    if (LMP_UNLIKELY(!(B[1] = lmpn_alloc(L)))) goto clean_B0;
+    if (LMP_UNLIKELY(!(B[2] = lmpn_alloc(L)))) {
         clean_B2: free(B[2]);
         clean_B1: free(B[1]);
         clean_B0: free(B[0]);
@@ -1018,10 +1018,10 @@ static int lmpn_mul_unbalanced(limb_t *c, const limb_t *a, size_t n, const limb_
     if (!tmp) return 1;
 
     int r = lmpn_mul(tmp, a + chunk, n - chunk, b, m);
-    unlikely(r) goto cleanup;
+    if (LMP_UNLIKELY(r)) goto cleanup;
     memset(c, 0, (n + m) * sizeof(limb_t));
     r = toom42(c, a, chunk, b, m);
-    unlikely(r) goto cleanup;
+    if (LMP_UNLIKELY(r)) goto cleanup;
     lmpn_add(c + chunk, c + chunk, n - chunk + m, tmp, n - chunk + m);
 
     cleanup:
@@ -1033,7 +1033,7 @@ static int lmpn_mul_unbalanced(limb_t *c, const limb_t *a, size_t n, const limb_
 static int lmpn_mul_small_b(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t m) {
     // 前置条件：m < MUL_TOOM22_THRESHOLD 且 n > MUL_BASECASE_MAX_UN
     limb_t *tp = lmpn_alloc(m);
-    unlikely(!tp) return 1;
+    if (LMP_UNLIKELY(!tp)) return 1;
 
     basecase(c, a, MUL_BASECASE_MAX_UN, b, m);
     limb_t *prodp = c + MUL_BASECASE_MAX_UN;
@@ -1126,11 +1126,11 @@ int lmpn_mul(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t m) {
             // 临时缓冲：需容纳 max(chunk + m, n_final + m)
             // 循环退出后 n_final < 3.5*m，所以 n_final + m < 4.5*m
             limb_t *tmp = lmpn_alloc(9 * m / 2 + 2);
-            unlikely(!tmp) return 1;
+            if (LMP_UNLIKELY(!tmp)) return 1;
 
             // ---- 第一块：直接写入 c ----
             int r = ntt(c, a, chunk, b, m);
-            unlikely(r) goto cleanup;
+            if (LMP_UNLIKELY(r)) goto cleanup;
             a += chunk;
             n -= chunk;
             c += chunk;
@@ -1138,7 +1138,7 @@ int lmpn_mul(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t m) {
             // ---- 中间块循环：剩余 n >= 3.5*m ----
             while (n >= 7 * m / 2) {
                 r = ntt(tmp, a, chunk, b, m);
-                unlikely(r) goto cleanup;
+                if (LMP_UNLIKELY(r)) goto cleanup;
                 a += chunk;
                 n -= chunk;
 
@@ -1156,7 +1156,7 @@ int lmpn_mul(limb_t *c, const limb_t *a, size_t n, const limb_t *b, size_t m) {
             if (n > 0) {
                 if (n < m) r = lmpn_mul(tmp, b, m, a, n);   // 保证 n >= m 的契约
                 else       r = lmpn_mul(tmp, a, n, b, m);
-                unlikely(r) goto cleanup;
+                if (LMP_UNLIKELY(r)) goto cleanup;
 
                 limb_t cy = lmpn_add_n(c, c, tmp, m);
                 memcpy(c + m, tmp + m, n * sizeof(limb_t));

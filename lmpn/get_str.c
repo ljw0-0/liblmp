@@ -69,9 +69,9 @@ static size_t _lmpn_get_str_dc(unsigned char *str, const limb_t *a, size_t n,
     }
 
     limb_t *q = lmpn_alloc(n - pow->n + 1);
-    unlikely(!q) return 0;
+    if (LMP_UNLIKELY(!q)) return 0;
     limb_t *r = lmpn_alloc(pow->n);
-    unlikely(!r) { free(q); return 0; }
+    if (LMP_UNLIKELY(!r)) { free(q); return 0; }
 
     lmpn_div_qr(q, r, a, n, (limb_t *)pow->a, pow->n);
 
@@ -81,12 +81,12 @@ static size_t _lmpn_get_str_dc(unsigned char *str, const limb_t *a, size_t n,
     while (rn > 0 && r[rn-1] == 0) --rn;
 
     size_t qlen = _lmpn_get_str_dc(str, q, qn, base, pow + 1, k_half, pad);
-    unlikely(!qlen) { free(q); free(r); return 0; }
+    if (LMP_UNLIKELY(!qlen)) { free(q); free(r); return 0; }
 
     size_t rlen = _lmpn_get_str_dc(str + qlen, r, rn, base, pow + 1, k_half, 1);
     free(q);
     free(r);
-    unlikely(!rlen) return 0;
+    if (LMP_UNLIKELY(!rlen)) return 0;
 
     return qlen + rlen;
 }
@@ -128,7 +128,7 @@ static size_t lmpn_get_str_dc(unsigned char *str, const limb_t *a, size_t n, int
     while (k) {
         size_t m = pow[k].n << 1 | 1;
         limb_t *t = malloc(m * sizeof(limb_t));
-        unlikely(!t || lmpn_sqr(t, (limb_t *)pow[k].a, pow[k].n)) {
+        if (LMP_UNLIKELY(!t || lmpn_sqr(t, (limb_t *)pow[k].a, pow[k].n))) {
             while (pow[k].n > 2) { free((void *)pow[k].a); ++k; }
             return 0;
         }

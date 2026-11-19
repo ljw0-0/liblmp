@@ -1,5 +1,4 @@
 #include "lmp.h"
-#include "impl.h"
 #include <string.h>
 
 int lmpn_divexact(limb_t *q, const limb_t *a, size_t n, const limb_t *b, size_t m) {
@@ -17,7 +16,7 @@ int lmpn_divexact(limb_t *q, const limb_t *a, size_t n, const limb_t *b, size_t 
         return 0;
     }
 
-    unlikely(!(ta = lmpn_alloc((n -= m-1)))) return 1;
+    if (LMP_UNLIKELY(!(ta = lmpn_alloc((n -= m-1))))) return 1;
     if (n < m) m = n;
 
     if (b[0] & 1) {
@@ -26,7 +25,7 @@ int lmpn_divexact(limb_t *q, const limb_t *a, size_t n, const limb_t *b, size_t 
     } else {
         limb_t *tb = lmpn_alloc(m);
         int ctz;
-        unlikely(!tb) {free(ta); return 1;}
+        if (LMP_UNLIKELY(!tb)) {free(ta); return 1;}
         lmpn_rshift(ta, a, n, ctz = limb_ctz(b[0]));
         ta[n-1] |= a[n] << (LIMB_WIDTH - ctz);
         lmpn_rshift(tb, b, m, ctz);

@@ -1,5 +1,4 @@
 #include "lmp.h"
-#include "impl.h"
 #include <string.h>
 
 int lmpz_neg(lmpz_t z, const lmpz_t a) {

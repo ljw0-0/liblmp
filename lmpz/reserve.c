@@ -1,5 +1,4 @@
 #include "lmp.h"
-#include "impl.h"
 #include <stdlib.h>
 
 int lmpz_reserve(lmpz_t z, size_t n) {

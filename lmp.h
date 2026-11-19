@@ -308,6 +308,8 @@ typedef lmpz lmpz_t[1];
 #define lmpz_size(z)    ((z)->size & (SIZE_MAX >> 1))
 #define lmpz_sgn_bit(z) ((z)->size & LMPZ_SIGN_BIT)
 
+LMP_INLINE void lmpz_norm(lmpz_t z) {z->size = lmpz_sgn_bit(z) | lmpn_norm(lmpz_get_mpn(z), lmpz_size(z));}
+
 // memory
 
 void lmpz_init(lmpz_t z);

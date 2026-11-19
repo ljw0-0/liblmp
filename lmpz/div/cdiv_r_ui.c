@@ -1,5 +1,4 @@
 #include "lmp.h"
-#include "impl.h"
 
 limb_t lmpz_cdiv_r_ui(const lmpz_t a, limb_t b) {
     if (LMP_UNLIKELY(b==0)) return (limb_t)(-1);

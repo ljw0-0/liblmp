@@ -1,2 +1,6 @@
 .xmake/
 build/
+main.c
+main
+main.exe
+main.out

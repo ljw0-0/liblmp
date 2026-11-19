@@ -3,7 +3,7 @@
 #include <string.h>
 
 int lmpz_set(lmpz_t z, const lmpz_t a) {
-    likely (z != a) {
+    if (LMP_LIKELY(z != a)) {
         if (!lmpz_cap(a) && !lmpz_cap(z)) z->limb = a->limb;
         else {
             int r = lmpz_reserve(z, lmpz_size(a));

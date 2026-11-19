@@ -13,7 +13,7 @@ extern "C" {
 /* ------ MACROS ------ */
 
 #if defined(__GNUC__) || defined(__clang__)
-# define LMP_INLINE      __attribute__((always_inline))
+# define LMP_INLINE      static inline __attribute__((always_inline))
 # define LMP_FLATTEN     __attribute__((flatten))
 # define LMP_LIKELY(x)   __builtin_expect(!!(x), 1)
 # define LMP_UNLIKELY(x) __builtin_expect(!!(x), 0)
@@ -29,7 +29,7 @@ extern "C" {
 # define LMP_CONST
 # define LMP_NORETURN
 #else
-# define LMP_INLINE      LMP_INLINE
+# define LMP_INLINE      static inline
 # define LMP_FLATTEN
 # define LMP_LIKELY(x)   (x)
 # define LMP_UNLIKELY(x) (x)

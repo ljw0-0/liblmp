@@ -9,7 +9,7 @@ void lmpz_shrink(lmpz_t z) {
             z->alloc = 0;
             z->limb = val;
         } else {
-            limb_t *p = mpn_realloc(lmpz_ptr(z), lmpz_size(z));
+            limb_t *p = lmpn_realloc(lmpz_ptr(z), lmpz_size(z));
             z->alloc = lmpz_size(z);
             if (LMP_LIKELY(p)) z->limb = (uintptr_t)p;
         }

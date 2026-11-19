@@ -6,6 +6,6 @@ int lmpz_init_neg_mpn(lmpz_t z, const limb_t *ap, size_t an) {
     int r = lmpz_init_reserve(z, an);
     if (LMP_UNLIKELY(r)) return r;
     memcpy(lmpz_ptr(z), ap, an*sizeof(limb_t));
-    z->size = lmpz_neg_size(mpn_norm(ap, an));
+    z->size = lmpz_neg_size(lmpn_norm(ap, an));
     return 0;
 }

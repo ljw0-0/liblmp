@@ -8,7 +8,7 @@ int lmpz_neg_uiui(lmpz_t z, limb_t hi, limb_t lo) {
         if (LMP_UNLIKELY(r)) return r;
         lmpz_at(z, 0) = lo;
         lmpz_at(z, 1) = hi;
-        z->size = 2 ^ lmpz_SIGN_BIT;
+        z->size = 2 ^ LMPZ_SIGN_BIT;
     }
     return 0;
 }

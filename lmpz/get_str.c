@@ -5,10 +5,10 @@
 #include <inttypes.h>
 
 char *lmpz_get_str(char *str, const lmpz_t z, int base) {
-    unlikely (base >= 63 || base < -36 || base == -1 || base == 0 || base == 1) return NULL;
+    if (LMP_UNLIKELY(base >= 63 || base < -36 || base == -1 || base == 0 || base == 1)) return NULL;
     char is_alloc, *d; // 用作 bool
     if (!str) {
-        size_t len = lmpz_sizeinbase(z, base) + 1 + !!(z->size & lmpz_SIGN_BIT);
+        size_t len = lmpz_sizeinbase(z, base) + 1 + !!(z->size & LMPZ_SIGN_BIT);
         str = malloc(len);
         if (LMP_UNLIKELY(!str)) return NULL;
         is_alloc = 1;
@@ -77,7 +77,7 @@ char *lmpz_get_str(char *str, const lmpz_t z, int base) {
         }
         *d = 0;
         --d;
-        l = str + !!(z->size & ((lmpz_SIZE_MAX >> 1) + 1));
+        l = str + !!(z->size & ((SIZE_MAX >> 1) + 1));
         while (l < d) {
             char w = *l;
             *l = *d;
@@ -90,7 +90,7 @@ char *lmpz_get_str(char *str, const lmpz_t z, int base) {
         size_t sz;
         if (base > 1) {if (base <= 36) conv = "0123456789abcdefghijklmnopqrstuvwxyz";}
         else if (base >= -36) base = -base;
-        sz = mpn_get_str((unsigned char *)d, lmpz_ptr(z), lmpz_size(z), base);
+        sz = lmpn_get_str((unsigned char *)d, lmpz_ptr(z), lmpz_size(z), base);
         if (sz == 0) {
             if (is_alloc) free(str);
             return NULL;

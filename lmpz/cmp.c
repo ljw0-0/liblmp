@@ -8,7 +8,7 @@ int lmpz_cmp(const lmpz_t a, const lmpz_t b) {
             size_t n = lmpz_size(a);
             if (n == 0) return 0;
             if (n == 1) return limb_cmp(lmpz_at(a, 0), lmpz_at(b, 0)); 
-            return mpn_cmp(lmpz_ptr(a), lmpz_ptr(b), n-1);
+            return lmpn_cmp(lmpz_ptr(a), lmpz_ptr(b), n-1);
         }
         return limb_cmp(a->limb, b->limb);
     } else {

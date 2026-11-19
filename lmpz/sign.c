@@ -6,6 +6,6 @@ int lmpz_sign(lmpz_t z) {
     #elif defined(__SIZE_WIDTH__)
     return (int)(z->size != 0) - ((int)((z->size) >> (__SIZE_WIDTH__ - 1)) << 1);
     #else
-    return (int)(z->size != 0) - ((z->size > (lmpz_SIZE_MAX>>1)) << 1);
+    return (int)(z->size != 0) - ((z->size > (SIZE_MAX>>1)) << 1);
     #endif
 }

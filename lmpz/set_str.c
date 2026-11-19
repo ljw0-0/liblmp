@@ -8,7 +8,7 @@ int lmpz_set_str(lmpz_t z, const char *str, int base) {
     size_t len, j = 0, size, sgn = 0;
     unsigned char *tmp;
 
-    unlikely (base > 62 || base == 1 || base < 0) return lmpz_EBASE;
+    if (LMP_UNLIKELY(base > 62 || base == 1 || base < 0)) return LMP_EBASE;
     while (isspace(*str)) ++str;
     if (*str == '\0') {
         zero:
@@ -16,10 +16,10 @@ int lmpz_set_str(lmpz_t z, const char *str, int base) {
         return 0;
     }
     if (*str == '-') {
-        sgn = lmpz_SIGN_BIT;
+        sgn = LMPZ_SIGN_BIT;
         ++str;
     } else if (*str == '+') ++str;
-    if (LMP_UNLIKELY(!isalnum(*str))) return lmpz_EPARSE;
+    if (LMP_UNLIKELY(!isalnum(*str))) return LMP_EPARSE;
     if (*str == '\0') goto zero;
     if (base == 0) {
         if (*str == '0') {
@@ -39,14 +39,14 @@ int lmpz_set_str(lmpz_t z, const char *str, int base) {
     }
     if (*str == '\0') goto zero;
     while (isspace(*str)) ++str;
-    unlikely (*str == '_') return lmpz_EPARSE;
+    if (LMP_UNLIKELY(*str == '_')) return LMP_EPARSE;
     len = strlen(str);
     while (len && isspace((unsigned char)str[len - 1])) --len;
     if (!len) goto zero;
-    unlikely (*str == '_') return lmpz_EPARSE;
+    if (LMP_UNLIKELY(*str == '_')) return LMP_EPARSE;
 
     tmp = malloc(len);
-    if (LMP_UNLIKELY(!tmp)) return lmpz_ENOMEM;
+    if (LMP_UNLIKELY(!tmp)) return LMP_ENOMEM;
 
     do {
         char c = *str;
@@ -119,7 +119,7 @@ int lmpz_set_str(lmpz_t z, const char *str, int base) {
             CASE('z', 35 + base_gt_36)
             default:
                 free(tmp);
-                return lmpz_EPARSE;
+                return LMP_EPARSE;
             #undef CASE
         }
         tmp[j] = val;
@@ -134,16 +134,16 @@ int lmpz_set_str(lmpz_t z, const char *str, int base) {
        * logB(base)*(j-1)-1 < n < logB(base)*j
     */
 
-    ret = lmpz_reserve(z, mpn_limbs_for_digits(j, base));
-    unlikely (ret) {
+    ret = lmpz_reserve(z, lmpn_limbs_for_digits(j, base));
+    if (LMP_UNLIKELY(ret)) {
         free(tmp);
         return ret;
     }
 
-    size = mpn_set_str(lmpz_limbs(z), tmp, j, base);
+    size = lmpn_set_str(lmpz_limbs(z), tmp, j, base);
     free(tmp);
 
-    unlikely (!size) return lmpz_ENOMEM;
+    if (LMP_UNLIKELY(!size)) return LMP_ENOMEM;
 
     z->size = size | sgn;
 

@@ -4,13 +4,7 @@ int lmpz_cmp(const lmpz_t a, const lmpz_t b) {
     if (a == b) return 0;
     if (a->size == b->size) {
         if (lmpz_sgn_bit(a)) {const lmpz *tmp = a; a = b; b = tmp;}
-        if (lmpz_cap(a)) {
-            size_t n = lmpz_size(a);
-            if (n == 0) return 0;
-            if (n == 1) return limb_cmp(lmpz_at(a, 0), lmpz_at(b, 0)); 
-            return lmpn_cmp(lmpz_ptr(a), lmpz_ptr(b), n-1);
-        }
-        return limb_cmp(a->limb, b->limb);
+        return lmpz_size(a) <= 1 ? limb_cmp(lmpz_get_ui(a), lmpz_get_ui(b)) : lmpn_cmp(lmpz_ptr(a), lmpz_ptr(b), lmpz_size(a));
     } else {
         size_t msk, sa, sb;
         #ifdef SIZE_WIDTH

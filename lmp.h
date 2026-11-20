@@ -286,8 +286,8 @@ size_t lmpn_set_str(limb_t *a, const unsigned char *str, size_t str_len, int bas
 
 // helper
 
-int lmpz_neg_size(size_t size);
-int lmpz_gen_size(size_t size, size_t sign_bit);
+size_t lmpz_neg_size(size_t size);
+size_t lmpz_gen_size(size_t size, size_t sign_bit);
 
 // type
 
@@ -307,8 +307,6 @@ typedef lmpz lmpz_t[1];
 
 #define lmpz_size(z)    ((z)->size & (SIZE_MAX >> 1))
 #define lmpz_sgn_bit(z) ((z)->size & LMPZ_SIGN_BIT)
-
-LMP_INLINE void lmpz_norm(lmpz_t z) {z->size = lmpz_sgn_bit(z) | lmpn_norm(lmpz_get_mpn(z), lmpz_size(z));}
 
 // memory
 

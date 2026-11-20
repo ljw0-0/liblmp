@@ -1,7 +1,5 @@
 #include "lmp.h"
 
-#include "lmp.h"
-
 int lmpz_tdiv_r(lmpz_t r, const lmpz_t a, const lmpz_t b) {
     int err;
     if (LMP_UNLIKELY(lmpz_is_zero(b))) return LMP_EDIVZERO;

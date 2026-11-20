@@ -488,6 +488,28 @@ int lmpz_divexact_by3(lmpz_t q, const lmpz_t a);
 int lmpz_gcd(lmpz_t g, const lmpz_t a, const lmpz_t b);
 limb_t lmpz_gcd_ui(const lmpz_t a, limb_t b);
 
+/* ------ LMPQ ------ */
+
+// type
+
+typedef struct {lmpz num, den;} lmpq;
+typedef lmpq lmpq_t[1];
+
+#define lmpq_numref(q) (&(q)->num)
+#define lmpq_denref(q) (&(q)->den)
+
+// memory
+
+void lmpq_init(lmpq_t q);
+void lmpq_clear(lmpq_t q);
+
+// assign
+
+int lmpq_set(lmpq_t q, const lmpq_t a);
+
+#define lmpq_set_num(q, num) lmpz_set(lmpq_numref(q), num)
+#define lmpq_set_den(q, den) lmpz_set(lmpq_denref(q), den)
+
 #ifdef __cplusplus
 }
 #endif

@@ -68,6 +68,18 @@ typedef intptr_t slimb_t;
 # error "Unsupported limb."
 #endif
 
+// constants
+
+#if LIMB_WIDTH == 16
+#  define limb_inv3 ((limb_t)0xAAABu)
+#elif LIMB_WIDTH == 32
+#  define limb_inv3 ((limb_t)0xAAAAAAABu)
+#elif LIMB_WIDTH == 64
+#  define limb_inv3 ((limb_t)0xAAAAAAAAAAAAAAABull)
+#else
+#  error "unsupported LIMB_BITS"
+#endif
+
 // clz and ctz
 
 #if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L
@@ -461,6 +473,10 @@ int lmpz_cdiv_q(lmpz_t q, const lmpz_t a, const lmpz_t b);
 int lmpz_tdiv_r(lmpz_t r, const lmpz_t a, const lmpz_t b);
 int lmpz_fdiv_r(lmpz_t r, const lmpz_t a, const lmpz_t b);
 int lmpz_cdiv_r(lmpz_t r, const lmpz_t a, const lmpz_t b);
+
+int lmpz_divexact(lmpz_t q, const lmpz_t a, const lmpz_t b);
+int lmpz_divexact_ui(lmpz_t q, const lmpz_t a, limb_t b);
+int lmpz_divexact_by3(lmpz_t q, const lmpz_t a);
 
 #ifdef __cplusplus
 }

@@ -101,6 +101,10 @@ int limb_clz(limb_t x);
 int limb_ctz(limb_t x);
 #endif
 
+// abs
+
+limb_t limb_abs(slimb_t a);
+
 // compare
 
 int limb_cmp(limb_t a, limb_t b);
@@ -378,6 +382,9 @@ int lmpz_init_neg_uiui(lmpz_t z, limb_t hi, limb_t lo);
 int lmpz_set_signed_uiui(lmpz_t z, limb_t hi, limb_t lo, size_t sign_bit);
 int lmpz_init_set_signed_uiui(lmpz_t z, limb_t hi, limb_t lo, size_t sign_bit);
 
+int lmpz_abs(lmpz_t z, const lmpz_t a);
+#define lmpz_abs_si(z, a) lmpz_set_ui((mpz_t)(z), limb_abs((slimb_t)(a)))
+
 void lmpz_zero(lmpz_t z);
 void lmpz_one(lmpz_t z);
 void lmpz_negative_one(lmpz_t z);
@@ -477,6 +484,9 @@ int lmpz_cdiv_r(lmpz_t r, const lmpz_t a, const lmpz_t b);
 int lmpz_divexact(lmpz_t q, const lmpz_t a, const lmpz_t b);
 int lmpz_divexact_ui(lmpz_t q, const lmpz_t a, limb_t b);
 int lmpz_divexact_by3(lmpz_t q, const lmpz_t a);
+
+int lmpz_gcd(lmpz_t g, const lmpz_t a, const lmpz_t b);
+limb_t lmpz_gcd_ui(const lmpz_t a, limb_t b);
 
 #ifdef __cplusplus
 }

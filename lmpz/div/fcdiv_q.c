@@ -25,11 +25,11 @@ static int lmpz_fcdiv_q(lmpz_t q, const lmpz_t a, const lmpz_t b, size_t sign_bi
             assert(!carry);
             #endif
         }
-        q->size = sign_a ^ sign_b | (sa - !lmpz_at(q, sa-1));
+        q->size = lmpz_gen_size(sa - !lmpz_at(q, sa-1), sign_a ^ sign_b);
     } else {
         size_t qn = sa - sb + 1;
         if (LMP_UNLIKELY((err = lmpz_reserve(q, qn)) || (err = cdiv ? lmpn_cdiv_q(lmpz_ptr(q), lmpz_ptr(a), sa, lmpz_ptr(b), sb) : lmpn_div_q(lmpz_ptr(q), lmpz_ptr(a), sa, lmpz_ptr(b), sb)))) return err;
-        q->size = (sign_a ^ sign_b) | (qn - !lmpz_at(q, qn-1));
+        q->size = lmpz_gen_size(qn - !lmpz_at(q, qn-1), sign_a ^ sign_b);
     }
     return 0;
 }

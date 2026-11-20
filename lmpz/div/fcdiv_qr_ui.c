@@ -22,7 +22,7 @@ static limb_t lmpz_fcdiv_qr_ui(lmpz_t q, const lmpz_t a, limb_t b, size_t sign_b
         lmpn_add_1(lmpz_ptr(q), lmpz_ptr(q), lmpz_size(a), 1);
         r = b-r;
     }
-    q->size = lmpz_sgn_bit(a) | (lmpz_size(a) - !lmpz_at(q, lmpz_size(a)-1));
+    q->size = lmpz_gen_size(lmpz_size(a) - !lmpz_at(q, lmpz_size(a)-1), lmpz_sgn_bit(a));
     return r;
 }
 

@@ -20,7 +20,7 @@ static int lmpz_fcdiv_r(lmpz_t r, const lmpz_t a, const lmpz_t b, size_t sign_bi
             int borrow = lmpn_sub(lmpz_ptr(r), lmpz_get_mpn(b), sb, lmpz_get_mpn(a), sa);
             assert(!borrow);
             #endif
-            r->size = (sign_b ^ sign_bit) | lmpn_norm(lmpz_ptr(r), sb);
+            r->size = lmpz_gen_size(lmpn_norm(lmpz_ptr(r), sb), sign_b ^ sign_bit);
         }
     } else if (sa == 1) {
         limb_t au = lmpz_get_ui(a), bu = lmpz_get_ui(b);
@@ -36,10 +36,10 @@ static int lmpz_fcdiv_r(lmpz_t r, const lmpz_t a, const lmpz_t b, size_t sign_bi
         if (LMP_UNLIKELY((err = lmpz_reserve(r, sb)))) return err;
         if (cdiv) {
             if (LMP_UNLIKELY(err = lmpn_cdiv_r(lmpz_ptr(r), lmpz_ptr(a), sa, lmpz_ptr(b), sb))) return err;
-            r->size = (sign_b ^ sign_bit) | lmpn_norm(lmpz_ptr(r), sb);
+            r->size = lmpz_gen_size(lmpn_norm(lmpz_ptr(r), sb), sign_b ^ sign_bit);
         } else {
             if (LMP_UNLIKELY(err = lmpn_div_r(lmpz_ptr(r), lmpz_ptr(a), sa, lmpz_ptr(b), sb))) return err;
-            r->size = sign_a | lmpn_norm(lmpz_ptr(r), sb);
+            r->size = lmpz_gen_size(lmpn_norm(lmpz_ptr(r), sb), sign_a);
         }
     }
     return 0;

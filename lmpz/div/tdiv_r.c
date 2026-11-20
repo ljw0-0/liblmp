@@ -10,7 +10,7 @@ int lmpz_tdiv_r(lmpz_t r, const lmpz_t a, const lmpz_t b) {
     else {
         size_t sb = lmpz_size(b);
         if (LMP_UNLIKELY((err = lmpz_reserve(r, sb)) || (err = lmpn_div_r(lmpz_ptr(r), lmpz_ptr(a), lmpz_size(a), lmpz_ptr(b), sb)))) return err;
-        r->size = lmpz_sgn_bit(a) | lmpn_norm(lmpz_ptr(r), sb);
+        r->size = lmpz_gen_size(lmpn_norm(lmpz_ptr(r), sb), lmpz_sgn_bit(a));
     }
     return 0;
 }

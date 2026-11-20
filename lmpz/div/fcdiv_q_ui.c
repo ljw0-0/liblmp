@@ -9,7 +9,7 @@ static int lmpz_fcdiv_q_ui(lmpz_t q, const lmpz_t a, limb_t b, size_t sign_bit) 
         int err = lmpz_reserve(q, lmpz_size(a));
         if (LMP_UNLIKELY(err)) return err;
         if (lmpn_div_qr_1(lmpz_ptr(q), lmpz_ptr(a), lmpz_size(a), b) && (lmpz_sgn_bit(a) ^ sign_bit)) lmpn_add_1(lmpz_ptr(q), lmpz_ptr(q), lmpz_size(a), 1);
-        q->size = lmpz_sgn_bit(a) | (lmpz_size(a) - !lmpz_at(q, lmpz_size(a)-1));
+        q->size = lmpz_gen_size(lmpz_size(a) - !lmpz_at(q, lmpz_size(a)-1), lmpz_sgn_bit(a));
     }
     return 0;
 }

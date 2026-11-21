@@ -503,12 +503,36 @@ typedef lmpq lmpq_t[1];
 void lmpq_init(lmpq_t q);
 void lmpq_clear(lmpq_t q);
 
-// assign
+void lmpq_swap(lmpq_t x, lmpq_t y);
+
+// set
 
 int lmpq_set(lmpq_t q, const lmpq_t a);
+int lmpq_set_z(lmpq_t q, const lmpz_t a);
+void lmpq_set_si(lmpq_t q, slimb_t num, limb_t den);
+void lmpq_set_ui(lmpq_t q, limb_t num, limb_t den);
 
 #define lmpq_set_num(q, num) lmpz_set(lmpq_numref(q), num)
 #define lmpq_set_den(q, den) lmpz_set(lmpq_denref(q), den)
+
+int lmpq_canonicalize(lmpq_t q);
+
+// get
+
+#define lmpq_get_num(q) ((const lmpz*)lmpq_numref(q))
+#define lmpq_get_den(q) ((const lmpz*)lmpq_denref(q))
+
+// cmp
+
+int _lmpq_cmp(const lmpz_t ap, const lmpz_t aq, const lmpz_t bp, const lmpz_t bq);
+int _lmpq_cmp_z(const lmpz_t ap, const lmpz_t aq, const lmpz_t b);
+int _lmpq_cmp_ui(const lmpz_t ap, const lmpz_t aq, limb_t b);
+int _lmpq_cmp_si(const lmpz_t ap, const lmpz_t aq, slimb_t b);
+
+int lmpq_cmp(const lmpq_t a, const lmpq_t b);
+int lmpq_cmp_z(const lmpq_t a, const lmpz_t b);
+int lmpq_cmp_si(const lmpq_t a, slimb_t b);
+int lmpq_cmp_ui(const lmpq_t a, limb_t b);
 
 #ifdef __cplusplus
 }

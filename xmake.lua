@@ -1,6 +1,6 @@
 target("lmp")
     set_kind("$(kind)")
-    add_files("limb/*.c", "lmpn/*.c", "lmpz/**.c")
+    add_files("limb/*.c", "lmpn/*.c", "lmpz/**.c", "lmpq/**.c")
     
     set_languages("c99")
     

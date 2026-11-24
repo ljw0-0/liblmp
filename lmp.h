@@ -101,13 +101,9 @@ int limb_clz(limb_t x);
 int limb_ctz(limb_t x);
 #endif
 
-// abs
-
 limb_t limb_abs(slimb_t a);
-
-// compare
-
 int limb_cmp(limb_t a, limb_t b);
+int limb_sgn(limb_t a);
 
 // operation
 
@@ -298,7 +294,7 @@ size_t lmpn_set_str(limb_t *a, const unsigned char *str, size_t str_len, int bas
 
 // constant
 
-#define LMPZ_SIGN_BIT  (~(SIZE_MAX >> 1))
+#define LMPZ_SIGN_BIT  (~((size_t)(-1) >> 1))
 
 // helper
 
@@ -315,14 +311,14 @@ typedef struct {
 
 typedef lmpz lmpz_t[1];
 
-#define lmpz_cap(z) ((z)->alloc)
+#define lmpz_cap(z)   ((z)->alloc)
 #define lmpz_limb(z)  ((z)->limb)
 #define lmpz_ptr(z)   ((void*)((z)->limb))
 #define lmpz_limbs(z) ((limb_t*)(void*)((z)->limb))
 #define lmpz_at(z, i) (lmpz_limbs(z)[i])
 
-#define lmpz_size(z)    ((z)->size & (SIZE_MAX >> 1))
-#define lmpz_sgn_bit(z) ((z)->size & LMPZ_SIGN_BIT)
+#define lmpz_size(z)     ((z)->size & ((size_t)(-1) >> 1))
+#define lmpz_sign_bit(z) ((z)->size & LMPZ_SIGN_BIT)
 
 // memory
 
@@ -514,6 +510,9 @@ void lmpq_set_ui(lmpq_t q, limb_t num, limb_t den);
 
 #define lmpq_set_num(q, num) lmpz_set(lmpq_numref(q), num)
 #define lmpq_set_den(q, den) lmpz_set(lmpq_denref(q), den)
+
+int _lmpq_set_str(lmpz_t p, lmpz_t q, const char *str, int base);
+int lmpq_set_str(lmpq_t q, const char *str, int base);
 
 int lmpq_canonicalize(lmpq_t q);
 

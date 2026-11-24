@@ -17,13 +17,13 @@ int lmpz_tdiv_qr(lmpz_t q, lmpz_t r, const lmpz_t a, const lmpz_t b) {
     } else if (lmpz_size(b) == 1) {
         size_t sa = lmpz_size(a);
         if (LMP_UNLIKELY(err = lmpz_reserve(q, sa))) return err;
-        lmpz_set_signed_ui(r, lmpn_div_qr_1(lmpz_ptr(q), lmpz_ptr(a), sa, lmpz_get_ui(b)), lmpz_sgn_bit(a));
-        q->size = lmpz_gen_size(sa - !lmpz_at(q, sa-1), lmpz_sgn_bit(a));
+        lmpz_set_signed_ui(r, lmpn_div_qr_1(lmpz_ptr(q), lmpz_ptr(a), sa, lmpz_get_ui(b)), lmpz_sign_bit(a));
+        q->size = lmpz_gen_size(sa - !lmpz_at(q, sa-1), lmpz_sign_bit(a));
     } else {
         size_t sa = lmpz_size(a), sb = lmpz_size(b);
         if (LMP_UNLIKELY((err = lmpz_reserve(q, sa-sb+1)) || (err = lmpz_reserve(r, sb)) || (err = lmpn_div_qr(lmpz_ptr(q), lmpz_ptr(r), lmpz_ptr(a), sa, lmpz_ptr(b), sb)))) return err;
         q->size = lmpz_gen_size(sa-sb+!!lmpz_at(q, sa-sb), (a->size ^ b->size) & LMPZ_SIGN_BIT);
-        r->size = lmpz_gen_size(lmpn_norm(lmpz_ptr(r), sb), lmpz_sgn_bit(a));
+        r->size = lmpz_gen_size(lmpn_norm(lmpz_ptr(r), sb), lmpz_sign_bit(a));
     }
     return 0;
 }

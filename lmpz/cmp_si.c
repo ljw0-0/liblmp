@@ -1,7 +1,7 @@
 #include "lmp.h"
 
 int lmpz_cmp_si(const lmpz_t a, slimb_t b) {
-    if (lmpz_sgn_bit(a)) {
+    if (lmpz_sign_bit(a)) {
         if (b > 0) return -1;
         if (lmpz_cap(a)) {
             if (lmpz_size(a) > 1) return -1;

@@ -12,13 +12,13 @@ int lmpz_divexact(lmpz_t q, const lmpz_t a, const lmpz_t b) {
     assert(sa >= sb);
 
     if (sa == 1) {
-        lmpz_set_signed_ui(q, lmpz_get_ui(a) / lmpz_get_ui(b), lmpz_sgn_bit(a) ^ lmpz_sgn_bit(b));
+        lmpz_set_signed_ui(q, lmpz_get_ui(a) / lmpz_get_ui(b), lmpz_sign_bit(a) ^ lmpz_sign_bit(b));
         return 0;
     }
 
     size_t qn = sa - sb + 1;
     if (LMP_UNLIKELY(err = lmpz_reserve(q, qn))) return err;
     if (LMP_UNLIKELY(err = lmpn_divexact(lmpz_ptr(q), lmpz_get_mpn(a), sa, lmpz_get_mpn(b), sb))) return err;
-    q->size = lmpz_gen_size(lmpn_norm(lmpz_ptr(q), qn), lmpz_sgn_bit(a) ^ lmpz_sgn_bit(b));
+    q->size = lmpz_gen_size(lmpn_norm(lmpz_ptr(q), qn), lmpz_sign_bit(a) ^ lmpz_sign_bit(b));
     return 0;
 }

@@ -61,9 +61,9 @@ int _lmpq_cmp(const lmpz_t ap, const lmpz_t aq, const lmpz_t bp, const lmpz_t bq
     assert(!lmpz_is_zero(aq) && !lmpz_is_zero(bq));
 
     int sign_a = lmpz_is_zero(ap) ? 0 :
-        ((lmpz_sgn_bit(ap) ^ lmpz_sgn_bit(aq)) ? -1 : 1);
+        ((lmpz_sign_bit(ap) ^ lmpz_sign_bit(aq)) ? -1 : 1);
     int sign_b = lmpz_is_zero(bp) ? 0 :
-        ((lmpz_sgn_bit(bp) ^ lmpz_sgn_bit(bq)) ? -1 : 1);
+        ((lmpz_sign_bit(bp) ^ lmpz_sign_bit(bq)) ? -1 : 1);
     if (sign_a != sign_b) return sign_a < sign_b ? -1 : 1;
     if (!sign_a) return 0;
 
@@ -76,7 +76,7 @@ int _lmpq_cmp(const lmpz_t ap, const lmpz_t aq, const lmpz_t bp, const lmpz_t bq
     int cmp;
     if (!err) {
         cmp = lmpz_cmp(x, y);
-        if (lmpz_sgn_bit(aq) ^ lmpz_sgn_bit(bq)) cmp = -cmp;
+        if (lmpz_sign_bit(aq) ^ lmpz_sign_bit(bq)) cmp = -cmp;
     } else {
         lmpz_clear(x);
         lmpz_clear(y);
@@ -93,8 +93,8 @@ int _lmpq_cmp_z(const lmpz_t ap, const lmpz_t aq, const lmpz_t b) {
     assert(!lmpz_is_zero(aq));
 
     int sign_a = lmpz_is_zero(ap) ? 0 :
-        ((lmpz_sgn_bit(ap) ^ lmpz_sgn_bit(aq)) ? -1 : 1);
-    int sign_b = lmpz_is_zero(b) ? 0 : (lmpz_sgn_bit(b) ? -1 : 1);
+        ((lmpz_sign_bit(ap) ^ lmpz_sign_bit(aq)) ? -1 : 1);
+    int sign_b = lmpz_is_zero(b) ? 0 : (lmpz_sign_bit(b) ? -1 : 1);
     if (sign_a != sign_b) return sign_a < sign_b ? -1 : 1;
     if (!sign_a) return 0;
 
@@ -102,7 +102,7 @@ int _lmpq_cmp_z(const lmpz_t ap, const lmpz_t aq, const lmpz_t b) {
     lmpz_init(product);
     if (!lmpz_mul(product, aq, b)) {
         int cmp = lmpz_cmp(ap, product);
-        if (lmpz_sgn_bit(aq)) cmp = -cmp;
+        if (lmpz_sign_bit(aq)) cmp = -cmp;
         lmpz_clear(product);
         return cmp;
     }

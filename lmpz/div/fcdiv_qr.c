@@ -4,7 +4,7 @@ static int lmpz_fcdiv_qr(lmpz_t q, lmpz_t r, const lmpz_t a, const lmpz_t b, siz
     int err;
     if (LMP_UNLIKELY(lmpz_is_zero(b))) return LMP_EDIVZERO;
     size_t sa = lmpz_size(a), sb = lmpz_size(b);
-    size_t sign_a = lmpz_sgn_bit(a), sign_b = lmpz_sgn_bit(b);
+    size_t sign_a = lmpz_sign_bit(a), sign_b = lmpz_sign_bit(b);
     int cdiv = ((sign_a ^ sign_b ^ sign_bit) & LMPZ_SIGN_BIT) != 0;
 
     if (lmpz_is_zero(a)) {

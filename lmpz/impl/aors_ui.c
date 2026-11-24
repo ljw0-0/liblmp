@@ -2,7 +2,7 @@
 
 int _lmpz_aors_ui(lmpz_t z, const lmpz_t a, limb_t b, size_t sign_bit) {
     limb_t al;
-    if (lmpz_sgn_bit(a) ^ sign_bit) {
+    if (lmpz_sign_bit(a) ^ sign_bit) {
         if (lmpz_cap(a)) return _lmpz_add_mpn_ui(z, sign_bit, lmpz_ptr(a), a->size ^ sign_bit, b);
         return lmpz_set_signed_uiui(z, lmpz_limb(a) + b < b, b, sign_bit);
     }

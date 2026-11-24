@@ -18,7 +18,7 @@ char *lmpz_get_str(char *str, int base, const lmpz_t z) {
         str[1] = 0;
         return str;
     }
-    if (lmpz_sgn_bit(z)) {str[0] = '-'; ++d;}
+    if (lmpz_sign_bit(z)) {str[0] = '-'; ++d;}
     if (lmpz_size(z) == 1) {
         char *l;
         limb_t value = lmpz_get_ui(z);

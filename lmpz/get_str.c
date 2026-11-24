@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <inttypes.h>
 
-char *lmpz_get_str(char *str, const lmpz_t z, int base) {
+char *lmpz_get_str(char *str, int base, const lmpz_t z) {
     if (LMP_UNLIKELY(base >= 63 || base < -36 || base == -1 || base == 0 || base == 1)) return NULL;
     char is_alloc, *d; // 用作 bool
     if (!str) {

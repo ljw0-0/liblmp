@@ -116,14 +116,5 @@ int _lmpq_cmp_z(const lmpz_t ap, const lmpz_t aq, const lmpz_t b) {
     return cmp;
 }
 
-int _lmpq_cmp_ui(const lmpz_t ap, const lmpz_t aq, limb_t b) {
-    lmpz_t bz;
-    lmpz_init_set_ui(bz, b);
-    return _lmpq_cmp_z(ap, aq, bz);
-}
-
-int _lmpq_cmp_si(const lmpz_t ap, const lmpz_t aq, slimb_t b) {
-    lmpz_t bz;
-    lmpz_init_set_si(bz, b);
-    return _lmpq_cmp_z(ap, aq, bz);
-}
+/*
+*/

@@ -398,7 +398,7 @@ slimb_t lmpz_get_si(const lmpz_t z);
 
 const limb_t *lmpz_get_mpn(const lmpz_t z);
 
-char *lmpz_get_str(char *str, const lmpz_t z, int base);
+char *lmpz_get_str(char *str, int base, const lmpz_t z);
 
 // compare
 
@@ -521,6 +521,9 @@ int lmpq_canonicalize(lmpq_t q);
 
 #define lmpq_get_num(q) ((const lmpz*)lmpq_numref(q))
 #define lmpq_get_den(q) ((const lmpz*)lmpq_denref(q))
+
+char *_lmpq_get_str(char *str, int base, const lmpz_t p, const lmpz_t q);
+char *lmpq_get_str(char *str, int base, const lmpq_t q);
 
 // cmp
 
